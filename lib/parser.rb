@@ -1,19 +1,20 @@
-# require './lib/chisel'
-require 'pry'
-
+# require_relative 'chisel'
+require "pry"
 class Parser
-  attr_reader :incoming_text
+  attr_reader :incoming_text, :final_convert
 
   def initialize
-      @incoming_text
+      incoming_text
   end
 
   def convert_arr(incoming_text)
+      # binding.pry
       incoming_text.split("\n\n")
   end
 
   def change_hashes(incoming_text)
     lines_arr = incoming_text.split(" ")
+    list_num = (1...100)
     case lines_arr[0]
     when "#"
       replace_with_header(lines_arr, "h1")
@@ -25,12 +26,24 @@ class Parser
       replace_with_header(lines_arr, "h4")
     when "#####"
       replace_with_header(lines_arr, "h5")
-    when "######"
-      replace_with_header(lines_arr, "h6")
+    when "*"
+     convert_ul(lines_arr)
+    when "#{list_num}."
+     convert_ol(lines_arr)
     else
       make_paragraph(lines_arr)
     end
   end
+
+    def convert_ol(line)
+      line.delete_at(0)
+      "<ol>\n#{line.join}</ol>\n"
+    end
+
+    def convert_ul(line)
+      line.delete_at(0)
+      "<ul>\n<li>#{line.join}</li>\n</ul>\n"
+    end
 
     def replace_with_header(line, header)
       line.delete_at(0)
@@ -66,6 +79,14 @@ class Parser
         line
       end
     end
-end
 
-# puts Chisel.new.incoming_text
+    def full_convert(incoming_text)
+      final_arr = convert_arr(incoming_text)
+      final_convert = final_arr.map do |line|
+      first = change_hashes(line)
+      final = change_style(first)
+      replace_characters(final)
+    end
+      final_convert.join("\n\n")
+    end
+end

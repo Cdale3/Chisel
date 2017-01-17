@@ -1,6 +1,7 @@
+require './lib/parser'
 require 'pry'
 class Chisel
-    attr_reader :incoming_text
+    attr_reader :incoming_text, :final_convert
 
     def initialize
       input = File.open('./lib/my_input.md', "r")
@@ -12,6 +13,7 @@ class Chisel
 
     def output_html
       html_file = @incoming_text
+      # binding.pry
       File.write("./lib/my_output.html", html_file)
       # File.write(ARGV[1], html_file)
       #   p "Converted #{ARGV[0]}" #{number_of_lines_original} to #{ARGV[1]} #{number_of_lines_converted}"

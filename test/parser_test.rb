@@ -22,15 +22,13 @@ class ParserTest < MiniTest::Test
     parser_3 = @parse.change_hashes("### My life in Desserts")
     parser_4 = @parse.change_hashes("#### My life in Desserts")
     parser_5 = @parse.change_hashes("##### My life in Desserts")
-    parser_6 = @parse.change_hashes("###### My life in Desserts")
-    parser_7 = @parse.change_hashes("You just")
+    parser_6 = @parse.change_hashes("You just")
     assert_equal "<h1>My life in Desserts</h1>", parser_1
     assert_equal "<h2>My life in Desserts</h2>", parser_2
     assert_equal "<h3>My life in Desserts</h3>", parser_3
     assert_equal "<h4>My life in Desserts</h4>", parser_4
     assert_equal "<h5>My life in Desserts</h5>", parser_5
-    assert_equal "<h6>My life in Desserts</h6>", parser_6
-    assert_equal "<p>\nYou just\n</p>\n", parser_7
+    assert_equal "<p>\nYou just\n</p>\n", parser_6
   end
 
   def test_it_changes_word_style
@@ -62,6 +60,12 @@ class ParserTest < MiniTest::Test
     end
 
     def test_can_make_an_ol         #ol is ordered list
-
+      list_1 = @parse.change_hashes("* Sushi")
+      assert_equal "<ul>\n<li>Sushi</li>\n</ul>\n", list_1
     end
+    def test_it_converts_the_md
+      converted = @parse.full_convert(incoming_text)
+      assert_equal "<h1>My Life in Desserts</h1>\n\n<h2>Chapter 1: The Beginning</h2>\n\n<p> &quot;You just <em>have</em> to try the cheesecake,&quot; he said. &quot;Ever since it appeared in <strong>Food &amp; Wine</strong> this place has been packed every night.&quot; </p>", converted
+    end
+
 end
