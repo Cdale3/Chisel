@@ -12,7 +12,7 @@ class Parser
       incoming_text.split("\n\n")
   end
 
-  def change_lines(incoming_text)
+  def change_hashes(incoming_text)
     lines_arr = incoming_text.split(" ")
     case lines_arr[0]
     when "#"
@@ -28,8 +28,7 @@ class Parser
     when "######"
       replace_with_header(lines_arr, "h6")
     else
-      lines_arr
-      # replace_with_header(lines_arr, "<p>")
+      make_paragraph(lines_arr)
     end
   end
 
@@ -38,6 +37,29 @@ class Parser
       "<#{header}>#{line.join(" ")}</#{header}>"
     end
 
+    def make_paragraph(line)
+      "<p>\n#{line.join(" ")}\n</p>\n"
+    end
+
+    def change_style(line)
+      words = line.split(" ")
+      words.map do |word|
+        if word.include?("***") || word.include?("**") || word.include?("*")    #run two ** before *, double needs to find two, where I fear single will try to do itself twice
+          word.gsub!(/[*]{3}/, "<strong></em>")
+          word.gsub!(/<\/strong>\b<em>\b/, "</strong></em>")
+          word.gsub!(/[*]{2}/, "</strong>")
+          word.gsub!(/<\/strong>\b/, "<strong>")
+          word.gsub!(/[*]{1}/, "</em>")
+          word.gsub!(/<\/em>\b/, "<em>")
+        else
+          word
+        end
+      end
+      words.join(" ")
+    end
+
+
+
 end
 
-puts Chisel.new.incoming_text
+# puts Chisel.new.incoming_text
