@@ -1,4 +1,4 @@
-require './lib/chisel'
+# require './lib/chisel'
 require 'pry'
 
 class Parser
@@ -45,8 +45,8 @@ class Parser
       words = line.split(" ")
       words.map do |word|
         if word.include?("***") || word.include?("**") || word.include?("*")    #run two ** before *, double needs to find two, where I fear single will try to do itself twice
-          word.gsub!(/[*]{3}/, "<strong></em>")
-          word.gsub!(/<\/strong>\b<em>\b/, "</strong></em>")
+          # word.gsub!(/[*]{3}/, "<strong></em>")
+          # word.gsub!(/<\/strong>\b<em>\b/, "</strong></em>")
           word.gsub!(/[*]{2}/, "</strong>")
           word.gsub!(/<\/strong>\b/, "<strong>")
           word.gsub!(/[*]{1}/, "</em>")
@@ -58,8 +58,14 @@ class Parser
       words.join(" ")
     end
 
-
-
+    def replace_characters(line)
+      if line.include?("\"") || line.include?("\'") || line.include?("&")
+        # line.gsub!(/["'&]/, "\"" => "\"", "\'" => "'", "&" => "&")                   # i'm not sure if this is correct or bad, it seems bad.
+        line.gsub!(/[&"']/, "&" => "&amp;", "\"" => "&quot;", "\'" => "&quot;")
+      else
+        line
+      end
+    end
 end
 
 # puts Chisel.new.incoming_text

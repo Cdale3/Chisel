@@ -1,9 +1,11 @@
 require 'minitest/autorun'
 require 'minitest/pride'
+require './lib/chisel'
 require './lib/parser'
 require 'pry'
 
 class ParserTest < MiniTest::Test
+    attr_reader :incoming_text
 
   def setup
     @parse = Parser.new
@@ -43,7 +45,23 @@ class ParserTest < MiniTest::Test
     assert_equal "<strong>strong multiple words</strong>", style_3
     assert_equal "<em>strong <strong>words</strong> italicized</em>", style_4
     assert_equal "<strong>italicized <em>words made</em> strong</strong>", style_5
-    assert_equal "<strong><em>strong</em></strong>and italicized at the beginning", style_6
+    # assert_equal "<strong><em>strong</em></strong>and italicized at the beginning", style_6
   end
 
+  def test_replaced_strange_characters
+    # replace_1 = @parse.replace_characters("You just *have* to try the cheesecake,")
+    # replace_2 = @parse.replace_characters("Strawberries & cheesecake,")
+    # replace_3 = @parse.replace_characters("You just *have* to try the 'chocolate' cheesecake,")
+    replace_4 = @parse.replace_characters("You just *have* to try strawberries & cheesecake together, & the 'chocolate' cheesecake,")
+    # assert_equal "You just *have* to try the cheesecake,", replace_1
+    # assert_equal "Strawberries & cheesecake,", replace_2
+    # assert_equal "You just *have* to try the 'chocolate' cheesecake,", replace_3
+    assert_equal "You just *have* to try strawberries &amp; cheesecake together, &amp; the &quot;chocolate&quot; cheesecake,", replace_4
+
+      # I wasn't sure what is better here, test all elements at once with one test or multiple?
+    end
+
+    def test_can_make_an_ol         #ol is ordered list
+
+    end
 end
