@@ -5,7 +5,7 @@ require './lib/parser'
 require 'pry'
 
 class ParserTest < MiniTest::Test
-    attr_reader :incoming_text
+    attr_reader :incoming_text, :final_convert
 
   def setup
     @parse = Parser.new
@@ -63,9 +63,11 @@ class ParserTest < MiniTest::Test
       list_1 = @parse.change_hashes("* Sushi")
       assert_equal "<ul>\n<li>Sushi</li>\n</ul>\n", list_1
     end
+
     def test_it_converts_the_md
+      # binding.pry
+      incoming_text = "# My Life in Desserts\n\n## Chapter 1: The Beginning\n\n\"You just *have* to try the cheesecake,\" he said. \"Ever since it appeared in\n**Food & Wine** this place has been packed every night.\"\n"
       converted = @parse.full_convert(incoming_text)
       assert_equal "<h1>My Life in Desserts</h1>\n\n<h2>Chapter 1: The Beginning</h2>\n\n<p> &quot;You just <em>have</em> to try the cheesecake,&quot; he said. &quot;Ever since it appeared in <strong>Food &amp; Wine</strong> this place has been packed every night.&quot; </p>", converted
     end
-
 end

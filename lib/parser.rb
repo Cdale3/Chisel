@@ -1,14 +1,12 @@
-# require_relative 'chisel'
-require "pry"
 class Parser
   attr_reader :incoming_text, :final_convert
 
-  def initialize
-      incoming_text
-  end
+  # def initialize(incoming_text = nil)
+  #     @incoming_text = incoming_text
+  # end
 
   def convert_arr(incoming_text)
-      # binding.pry
+    # binding.pry
       incoming_text.split("\n\n")
   end
 
@@ -73,20 +71,20 @@ class Parser
 
     def replace_characters(line)
       if line.include?("\"") || line.include?("\'") || line.include?("&")
-        # line.gsub!(/["'&]/, "\"" => "\"", "\'" => "'", "&" => "&")                   # i'm not sure if this is correct or bad, it seems bad.
         line.gsub!(/[&"']/, "&" => "&amp;", "\"" => "&quot;", "\'" => "&quot;")
       else
         line
       end
     end
 
-    def full_convert(incoming_text)
+    def full_convert(incoming_text, second)
+      # binding.pry
       final_arr = convert_arr(incoming_text)
       final_convert = final_arr.map do |line|
-      first = change_hashes(line)
-      final = change_style(first)
-      replace_characters(final)
-    end
+        first = change_hashes(line)
+        final = change_style(first)
+        replace_characters(final)
+      end
       final_convert.join("\n\n")
     end
 end
