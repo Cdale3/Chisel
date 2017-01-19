@@ -5,24 +5,24 @@ require './lib/parser'
 require 'pry'
 
 class ParserTest < MiniTest::Test
-    attr_reader :incoming_text, :final_convert
+    attr_reader :incoming_text, :final_convert, :parse
 
   def setup
     @parse = Parser.new
   end
 
   def test_can_make_each_line_an_array
-    parser = @parse.convert_arr("string\n\nstring")
+    parser = parse.convert_arr("string\nstring")
     assert_equal ["string", "string"], parser
   end
 
   def test_check_each_line
-    parser_1 = @parse.change_hashes("# My life in Desserts")
-    parser_2 = @parse.change_hashes("## My life in Desserts")
-    parser_3 = @parse.change_hashes("### My life in Desserts")
-    parser_4 = @parse.change_hashes("#### My life in Desserts")
-    parser_5 = @parse.change_hashes("##### My life in Desserts")
-    parser_6 = @parse.change_hashes("You just")
+    parser_1 = parse.change_hashes("# My life in Desserts")
+    parser_2 = parse.change_hashes("## My life in Desserts")
+    parser_3 = parse.change_hashes("### My life in Desserts")
+    parser_4 = parse.change_hashes("#### My life in Desserts")
+    parser_5 = parse.change_hashes("##### My life in Desserts")
+    parser_6 = parse.change_hashes("You just")
     assert_equal "<h1>My life in Desserts</h1>", parser_1
     assert_equal "<h2>My life in Desserts</h2>", parser_2
     assert_equal "<h3>My life in Desserts</h3>", parser_3
@@ -32,12 +32,12 @@ class ParserTest < MiniTest::Test
   end
 
   def test_it_changes_word_style
-    style_1 = @parse.change_style("*italicize* this word")
-    style_2 = @parse.change_style("**strong** this word")
-    style_3 = @parse.change_style("**strong multiple words**")
-    style_4 = @parse.change_style("*strong **words** italicized*")
-    style_5 = @parse.change_style("**italicized *words made* strong**")
-    style_6 = @parse.change_style("***strong*** and italicized at the beginning")
+    style_1 = parse.change_style("*italicize* this word")
+    style_2 = parse.change_style("**strong** this word")
+    style_3 = parse.change_style("**strong multiple words**")
+    style_4 = parse.change_style("*strong **words** italicized*")
+    style_5 = parse.change_style("**italicized *words made* strong**")
+    style_6 = parse.change_style("***strong*** and italicized at the beginning")
     assert_equal "<em>italicize</em> this word", style_1
     assert_equal "<strong>strong</strong> this word", style_2
     assert_equal "<strong>strong multiple words</strong>", style_3
@@ -50,7 +50,7 @@ class ParserTest < MiniTest::Test
     # replace_1 = @parse.replace_characters("You just *have* to try the cheesecake,")
     # replace_2 = @parse.replace_characters("Strawberries & cheesecake,")
     # replace_3 = @parse.replace_characters("You just *have* to try the 'chocolate' cheesecake,")
-    replace_4 = @parse.replace_characters("You just *have* to try strawberries & cheesecake together, & the 'chocolate' cheesecake,")
+    replace_4 = parse.replace_characters("You just *have* to try strawberries & cheesecake together, & the 'chocolate' cheesecake,")
     # assert_equal "You just *have* to try the cheesecake,", replace_1
     # assert_equal "Strawberries & cheesecake,", replace_2
     # assert_equal "You just *have* to try the 'chocolate' cheesecake,", replace_3
@@ -60,14 +60,13 @@ class ParserTest < MiniTest::Test
     end
 
     def test_can_make_an_ol         #ol is ordered list
-      list_1 = @parse.change_hashes("* Sushi")
+      list_1 = parse.change_hashes("* Sushi")
       assert_equal "<ul>\n<li>Sushi</li>\n</ul>\n", list_1
     end
 
     def test_it_converts_the_md
-      # binding.pry
       incoming_text = "# My Life in Desserts\n\n## Chapter 1: The Beginning\n\n\"You just *have* to try the cheesecake,\" he said. \"Ever since it appeared in\n**Food & Wine** this place has been packed every night.\"\n"
-      converted = @parse.full_convert(incoming_text)
+      converted = parse.full_convert(incoming_text, self)
       assert_equal "<h1>My Life in Desserts</h1>\n\n<h2>Chapter 1: The Beginning</h2>\n\n<p> &quot;You just <em>have</em> to try the cheesecake,&quot; he said. &quot;Ever since it appeared in <strong>Food &amp; Wine</strong> this place has been packed every night.&quot; </p>", converted
     end
 end
